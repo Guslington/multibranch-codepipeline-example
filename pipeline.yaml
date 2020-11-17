@@ -1,0 +1,54 @@
+pipeline:
+  stages:
+    - name: DeployDev
+      when:
+        branch:
+          - develop
+          - feature/*
+      steps:
+        - name: CreateChangeSet
+          configuration:
+            ChangeSetName: exampledevstackdeploy
+            ActionMode: CHANGE_SET_REPLACE
+            StackName: example-dev
+            Capabilities: CAPABILITY_IAM
+            TemplatePath: Source::template.yaml
+        - name: ExecuteChangeSet
+          configuration:
+            ChangeSetName: exampledevstackdeploy
+            ActionMode: CHANGE_SET_EXECUTE
+            StackName: example-dev
+      - name: DeployStage
+        when:
+          branch:
+            - master
+        steps:
+          - name: CreateChangeSet
+            configuration:
+              ChangeSetName: examplestagestackdeploy
+              ActionMode: CHANGE_SET_REPLACE
+              StackName: example-stage
+              Capabilities: CAPABILITY_IAM
+              TemplatePath: Source::template.yaml
+          - name: ExecuteChangeSet
+            configuration:
+              ChangeSetName: examplestagestackdeploy
+              ActionMode: CHANGE_SET_EXECUTE
+              StackName: example-stage
+        - name: DeployProd
+          when:
+            branch:
+              - master
+          steps:
+            - name: CreateChangeSet
+              configuration:
+                ChangeSetName: exampleprodstackdeploy
+                ActionMode: CHANGE_SET_REPLACE
+                StackName: example-prod
+                Capabilities: CAPABILITY_IAM
+                TemplatePath: Source::template.yaml
+            - name: ExecuteChangeSet
+              configuration:
+                ChangeSetName: exampleprodstackdeploy
+                ActionMode: CHANGE_SET_EXECUTE
+                StackName: example-prod
