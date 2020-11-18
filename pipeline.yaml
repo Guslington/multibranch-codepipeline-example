@@ -21,7 +21,7 @@ pipeline:
   - name: DeployStage
     when:
       branch:
-        - master
+        - main
     steps:
     - name: CreateChangeSet
       configuration:
@@ -38,7 +38,7 @@ pipeline:
   - name: DeployProd
     when:
       branch:
-        - master
+        - main
     steps:
     - name: CreateChangeSet
       configuration:
